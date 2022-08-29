@@ -3,14 +3,10 @@ from pathlib import Path
 import re
 
 
-def load_spectral_data(drop_small=False) -> (pd.DataFrame, pd.Series):
+def load_spectral_data(label_level_to_use, drop_small=False) -> (pd.DataFrame, pd.Series):
     file_loc = Path('Rhododendron_spectramatrix.csv')
     all_data = pd.read_csv(file_loc, index_col='accession')
     all_data = all_data[~all_data['species'].str.contains('unk')]
-    features = all_data.copy().drop('file_names', axis=1) \
-        .drop('species', axis=1) \
-        .drop('type', axis=1)
-
     all_data['full_label'] = all_data['species']
     del all_data['species']
 
@@ -24,13 +20,18 @@ def load_spectral_data(drop_small=False) -> (pd.DataFrame, pd.Series):
                                                           if len(split_label(f)) == 4
                                                           else '')
     all_data['species'] = all_data['full_label'].apply(lambda f: split_label(f)[-1].replace('.', ''))
+    del all_data['full_label']
 
-    label_level_to_use = all_data['subgenus']
     if drop_small:
-        classes_to_remove = pd.value_counts(label_level_to_use)
+        classes_to_remove = pd.value_counts(all_data[label_level_to_use])
         classes_to_remove = classes_to_remove[classes_to_remove < 5]
         classes_to_remove = list(classes_to_remove.index)
-        indicies_to_keep = label_level_to_use[label_level_to_use not in classes_to_remove]
-        features = all_data[indicies_to_keep]
-        label_level_to_use = label_level_to_use[indicies_to_keep]
-    return features, label_level_to_use
+        for remove in classes_to_remove:
+            all_data = all_data[~all_data[label_level_to_use].str.contains(remove)]
+
+    cols_to_drop = ['file_names', 'type', 'species', 'genus', 'subgenus', 'subsection']
+    features = all_data.copy()
+    for col in cols_to_drop:
+        features = features.drop(col, axis=1)
+    labels = all_data[label_level_to_use]
+    return features, labels
