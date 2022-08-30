@@ -2,25 +2,22 @@
 # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsClassifier.html
 
 import numpy as np
-from sklearn.metrics import ConfusionMatrixDisplay, classification_report, confusion_matrix
 from sklearn.neighbors import KNeighborsClassifier
-from utilities import load_spectral_data
-import matplotlib.pyplot as plt
+from utilities import load_spectral_data, display_results
 
-if __name__ == '__main__':
-    features, labels = load_spectral_data()
+
+def knn(features, labels, test_features=np.array([]), test_labels=np.array([])):
     model = KNeighborsClassifier(weights='distance')
     model.fit(features, labels)
+    if test_features.size:
+        expected = np.array(test_labels)
+        predicted_labels = model.predict(test_features)
+    else:
+        expected = np.array(labels)
+        predicted_labels = model.predict(features)
+    display_results(expected, predicted_labels, 'KNN Classifier')
 
-    expected = np.array(labels)
-    predicted_labels = model.predict(features)
 
-    print(classification_report(expected, predicted_labels,
-                                labels=np.unique(predicted_labels)))
-    confusion_matrix = confusion_matrix(expected, predicted_labels,
-                                        labels=np.unique(labels))
-    cm_display = ConfusionMatrixDisplay(confusion_matrix=confusion_matrix,
-                                        display_labels=np.unique(labels)).plot()
-    cm_display.ax_.set_xticklabels(labels=np.unique(labels),
-                                   rotation=30, horizontalalignment='right')
-    plt.show()
+if __name__ == '__main__':
+    X, y = load_spectral_data('subgenus')
+    knn(X, y)
