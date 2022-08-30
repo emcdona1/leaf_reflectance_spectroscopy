@@ -1,6 +1,9 @@
 import pandas as pd
 from pathlib import Path
 import re
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import metrics
 
 
 def load_spectral_data(label_level_to_use, drop_small=False) -> (pd.DataFrame, pd.Series):
@@ -35,3 +38,18 @@ def load_spectral_data(label_level_to_use, drop_small=False) -> (pd.DataFrame, p
         features = features.drop(col, axis=1)
     labels = all_data[label_level_to_use]
     return features, labels
+
+
+def display_results(expected, predicted_labels, confusion_matrix_title='Confusion Matrix'):
+    plt.clf()
+    chart_labels = np.unique(expected)
+    print(metrics.classification_report(expected, predicted_labels,
+                                        labels=np.unique(predicted_labels)))
+    confusion_matrix = metrics.confusion_matrix(expected, predicted_labels,
+                                                labels=chart_labels)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=confusion_matrix,
+                                                display_labels=chart_labels).plot()
+    cm_display.ax_.set_xticklabels(labels=chart_labels,
+                                   rotation=30, horizontalalignment='right')
+    plt.title(confusion_matrix_title)
+    plt.show()
