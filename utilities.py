@@ -28,25 +28,25 @@ def load_spectral_data(label_level_to_use, drop_small=False) -> (pd.DataFrame, p
     if label_level_to_use == 'subsection':
         all_data = all_data[all_data['subgenus'] == 'Rh']
         all_data = all_data[all_data['subsection'] != '']
-    elif label_level_to_use == 'species':
+    if label_level_to_use == 'species':
         all_data = all_data[all_data['subsection'] == 'La']
-    elif label_level_to_use == 'species group':
+    if label_level_to_use == 'species group':
         all_data = all_data[all_data['subsection'] == 'La']
-        # groups = {'amundsenianum': 2, 'bulu': 4, 'capitatum': 5, 'complexum': 2, 'fastigiatum': 3,
-        #           'flavidum': 3, 'hippophaeoides': 1, 'impeditum': 3, 'intricatum': 1,
-        #           'minyaense': 4, 'nitidulum': 1, 'nitidulum_var_omiense': 1, 'nivale': 5,
-        #           'nivale_ssp_boreale': 5, 'orthocladum': 4, 'orthocladum_var_longistylum': 4,
-        #           'polycladum': 3, 'rufescens': -1, 'rupicola': 5, 'rupicola_var_muliense': 5,
-        #           'rupicola_var_rupicola': 5, 'russatum': 5, 'tapeptiforme': 2, 'tapetiforme': 2,
-        #           'telmateium': 4, 'thymifolium': 1, 'trichanthum': -1, 'tsaii': 1,
-        #           'websterianum': 1, 'yungningense': 2}
-        # all_data['species group'] = all_data['species'].apply(lambda f: str(groups[f]))
+        groups = {'amundsenianum': 2, 'bulu': 4, 'capitatum': 5, 'complexum': 2, 'fastigiatum': 3,
+                  'flavidum': 3, 'hippophaeoides': 1, 'impeditum': 3, 'intricatum': 1,
+                  'minyaense': 4, 'nitidulum': 1, 'nitidulum_var_omiense': 1, 'nivale': 5,
+                  'nivale_ssp_boreale': 5, 'orthocladum': 4, 'orthocladum_var_longistylum': 4,
+                  'polycladum': 3, 'rufescens': -1, 'rupicola': 5, 'rupicola_var_muliense': 5,
+                  'rupicola_var_rupicola': 5, 'russatum': 5, 'tapeptiforme': 2, 'tapetiforme': 2,
+                  'telmateium': 4, 'thymifolium': 1, 'trichanthum': -1, 'tsaii': 1,
+                  'websterianum': 1, 'yungningense': 2}
+        all_data['species group'] = all_data['species'].apply(lambda f: str(groups[f]))
     if drop_small:
         classes_to_remove = pd.value_counts(all_data[label_level_to_use])
         classes_to_remove = classes_to_remove[classes_to_remove < 5]
         classes_to_remove = list(classes_to_remove.index)
         for remove in classes_to_remove:
-            all_data = all_data[~all_data[label_level_to_use].str.contains(remove)]
+            all_data = all_data[all_data[label_level_to_use] != remove]
 
     cols_to_drop = ['file_names', 'type', 'species', 'genus', 'subgenus', 'subsection']
     features = all_data.copy()
