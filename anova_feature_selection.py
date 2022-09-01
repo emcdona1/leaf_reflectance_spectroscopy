@@ -4,7 +4,6 @@ from sklearn.model_selection import train_test_split, StratifiedKFold
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 import matplotlib.pyplot as plt
-from utilities import load_spectral_data
 
 
 # feature selection

@@ -2,7 +2,7 @@
 
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-from utilities import load_spectral_data, display_results
+from utilities.utilities import display_results
 
 
 def cart(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):

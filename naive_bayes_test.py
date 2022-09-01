@@ -2,7 +2,7 @@
 
 import numpy as np
 from sklearn.naive_bayes import GaussianNB
-from utilities import load_spectral_data, display_results
+from utilities.utilities import display_results
 
 
 def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
@@ -16,8 +16,3 @@ def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.arr
         predicted_labels = model.predict(features)
     display_results(expected, predicted_labels, 'Gaussian Naive Bayes')
     return expected, predicted_labels
-
-
-if __name__ == '__main__':
-    X, y = load_spectral_data('subgenus')
-    naive_bayes(X, y)

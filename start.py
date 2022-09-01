@@ -1,9 +1,8 @@
-from utilities import load_spectral_data
+from utilities.utilities import load_spectral_data
 from sklearn.model_selection import train_test_split
 from cart_test import cart
 from naive_bayes_test import naive_bayes
 from knn_test import knn
-from sklearn import metrics
 
 
 def main():

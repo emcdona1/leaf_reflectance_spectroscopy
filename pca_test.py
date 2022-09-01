@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-from utilities import load_spectral_data
 
 
 def pca(features, labels, level='species group', n_features=10):

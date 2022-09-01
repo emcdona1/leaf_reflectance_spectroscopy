@@ -3,7 +3,7 @@
 
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
-from utilities import load_spectral_data, display_results
+from utilities.utilities import display_results
 
 
 def knn(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
