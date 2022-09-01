@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from utilities import load_spectral_data, display_results
 
 
-def knn(features, labels, test_features=np.array([]), test_labels=np.array([])):
+def knn(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
     model = KNeighborsClassifier(weights='distance')
     model.fit(features, labels)
     if test_features.size:
@@ -16,8 +16,4 @@ def knn(features, labels, test_features=np.array([]), test_labels=np.array([])):
         expected = np.array(labels)
         predicted_labels = model.predict(features)
     display_results(expected, predicted_labels, 'KNN Classifier')
-
-
-if __name__ == '__main__':
-    X, y = load_spectral_data('subgenus')
-    knn(X, y)
+    return expected, predicted_labels

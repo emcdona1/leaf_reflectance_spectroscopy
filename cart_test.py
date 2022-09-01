@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from utilities import load_spectral_data, display_results
 
 
-def cart(features, labels, test_features=np.array([]), test_labels=np.array([])):
+def cart(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
     model = DecisionTreeClassifier()
     model.fit(features, labels)
     if test_features.size:
@@ -15,8 +15,4 @@ def cart(features, labels, test_features=np.array([]), test_labels=np.array([]))
         expected = np.array(labels)
         predicted_labels = model.predict(features)
     display_results(expected, predicted_labels, 'Decision Tree')
-
-
-if __name__ == '__main__':
-    X, y = load_spectral_data('subgenus')
-    cart(X, y)
+    return expected, predicted_labels

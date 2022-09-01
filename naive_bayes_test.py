@@ -5,7 +5,7 @@ from sklearn.naive_bayes import GaussianNB
 from utilities import load_spectral_data, display_results
 
 
-def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.array([])):
+def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
     model = GaussianNB()
     model.fit(features, labels)
     if test_features.size:
@@ -15,6 +15,7 @@ def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.arr
         expected = np.array(labels)
         predicted_labels = model.predict(features)
     display_results(expected, predicted_labels, 'Gaussian Naive Bayes')
+    return expected, predicted_labels
 
 
 if __name__ == '__main__':
