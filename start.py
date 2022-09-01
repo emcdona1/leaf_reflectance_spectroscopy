@@ -1,8 +1,7 @@
-from utilities.utilities import load_spectral_data
+import numpy as np
 from sklearn.model_selection import train_test_split
-from cart_test import cart
-from naive_bayes_test import naive_bayes
-from knn_test import knn
+from sklearn.metrics import classification_report
+from utilities import load_spectral_data, cart, knn, naive_bayes
 
 
 def main():
@@ -38,7 +37,7 @@ def main():
         expected, predicted = naive_bayes(X_train, y_train, X_test, y_test)
     elif algorithm == 'knn':
         expected, predicted = knn(X_train, y_train, X_test, y_test)
-    pass
+    outcome = classification_report(expected, predicted, labels=np.unique(predicted), output_dict=True)
 
 
 if __name__ == '__main__':
