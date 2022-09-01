@@ -81,10 +81,10 @@ def _load_data_and_clean():
 
 
 def display_results(expected, predicted_labels, confusion_matrix_title='Confusion Matrix'):
-    plt.clf()
     chart_labels = np.unique(expected)
-    print(metrics.classification_report(expected, predicted_labels,
-                                        labels=np.unique(predicted_labels)))
+    report = metrics.classification_report(expected, predicted_labels,
+                                           labels=np.unique(predicted_labels))
+    print(report)
     confusion_matrix = metrics.confusion_matrix(expected, predicted_labels,
                                                 labels=chart_labels)
     cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=confusion_matrix,
@@ -93,3 +93,4 @@ def display_results(expected, predicted_labels, confusion_matrix_title='Confusio
                                    rotation=30, horizontalalignment='right')
     plt.title(confusion_matrix_title)
     plt.show()
+    return report
