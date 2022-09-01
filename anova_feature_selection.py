@@ -45,7 +45,7 @@ def plot_feature_significance(level='subgenus'):
     plt.savefig(f'{level}.png')
     plt.show()
     # for i in range(len(fs.scores_)):
-    #     print(f'Feature {i}: {fs.scores_[i]}')
+    #     print(f'Feature {fs.feature_names_in[i]}: {fs.scores_[i]}')
 
 
 def five_fold_validation_of_feature_significance(level='subgenus', n_folds=5):
@@ -63,4 +63,4 @@ def five_fold_validation_of_feature_significance(level='subgenus', n_folds=5):
     plt.savefig(f'{level}-5_fold.png')
     plt.show()
     # for i in range(len(fs.scores_)):
-    #     print(f'Feature {i}: {fs.scores_[i]}')
+    #     print(f'Feature {fs.feature_names_in[i]}: {fs.scores_[i]}')
