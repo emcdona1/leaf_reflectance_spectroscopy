@@ -60,7 +60,7 @@ def _process_search_group(all_data, search_group):
 
 
 def _load_data_and_clean():
-    file_loc = Path('../../spectral_analysis/Rhododendron_spectramatrix.csv')
+    file_loc = Path('./data/Rhododendron_spectramatrix.csv')
     all_data = pd.read_csv(file_loc, index_col='accession')
     all_data = all_data[~all_data['species'].str.contains('unk')]
     all_data['full_label'] = all_data['species']
