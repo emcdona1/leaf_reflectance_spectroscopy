@@ -1,9 +1,7 @@
 import pandas as pd
 from pathlib import Path
 import re
-import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import metrics
 
 
 def load_spectral_data(search_group: str, search_level: str, drop_small=True, search_query=None) -> \
@@ -78,19 +76,3 @@ def _load_data_and_clean():
     all_data['species'] = all_data['full_label'].apply(lambda f: split_label(f)[-1].replace('.', ''))
     del all_data['full_label']
     return all_data
-
-
-def display_results(expected, predicted_labels, confusion_matrix_title='Confusion Matrix'):
-    chart_labels = np.unique(expected)
-    report = metrics.classification_report(expected, predicted_labels,
-                                           labels=np.unique(predicted_labels))
-    print(report)
-    confusion_matrix = metrics.confusion_matrix(expected, predicted_labels,
-                                                labels=chart_labels)
-    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=confusion_matrix,
-                                                display_labels=chart_labels).plot()
-    cm_display.ax_.set_xticklabels(labels=chart_labels,
-                                   rotation=30, horizontalalignment='right')
-    plt.title(confusion_matrix_title)
-    plt.show()
-    return report

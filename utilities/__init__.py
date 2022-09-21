@@ -1,3 +1,3 @@
-from utilities.utilities import load_spectral_data, display_results
+from utilities.utilities import load_spectral_data
 from utilities.feature_reductions import pca, anova, mutual_info
-from utilities.classifications import cart, knn, naive_bayes, gradient_boost
+from utilities.classifications import classify_data

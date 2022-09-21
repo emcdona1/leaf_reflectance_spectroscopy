@@ -2,15 +2,12 @@
 # https://machinelearningmastery.com/gradient-boosting-machine-ensemble-in-python/
 
 import numpy as np
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, HistGradientBoostingClassifier
-from utilities import display_results
+import matplotlib.pyplot as plt
+from sklearn import metrics
 
 
-def cart(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
-    model = DecisionTreeClassifier()
+def classify_data(features, labels, test_features, test_labels, classifier_function) -> (np.ndarray, np.ndarray):
+    model = classifier_function()
     model.fit(features, labels)
     if test_features.size:
         expected = np.array(test_labels)
@@ -18,44 +15,21 @@ def cart(features, labels, test_features=np.array([]), test_labels=np.array([]))
     else:
         expected = np.array(labels)
         predicted_labels = model.predict(features)
-    display_results(expected, predicted_labels, 'Decision Tree')
-    return expected, predicted_labels
+    report = display_results(expected, predicted_labels, str(model).replace('()', ''))
+    return expected, predicted_labels, report
 
 
-def knn(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
-    model = KNeighborsClassifier(weights='distance')
-    model.fit(features, labels)
-    if test_features.size:
-        expected = np.array(test_labels)
-        predicted_labels = model.predict(test_features)
-    else:
-        expected = np.array(labels)
-        predicted_labels = model.predict(features)
-    display_results(expected, predicted_labels, 'KNN Classifier')
-    return expected, predicted_labels
-
-
-def naive_bayes(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
-    model = GaussianNB()
-    model.fit(features, labels)
-    if test_features.size:
-        expected = np.array(test_labels)
-        predicted_labels = model.predict(test_features)
-    else:
-        expected = np.array(labels)
-        predicted_labels = model.predict(features)
-    display_results(expected, predicted_labels, 'Gaussian Naive Bayes')
-    return expected, predicted_labels
-
-
-def gradient_boost(features, labels, test_features=np.array([]), test_labels=np.array([])) -> (np.ndarray, np.ndarray):
-    model = GradientBoostingClassifier()
-    model.fit(features, labels)
-    if test_features.size:
-        expected = np.array(test_labels)
-        predicted_labels = model.predict(test_features)
-    else:
-        expected = np.array(labels)
-        predicted_labels = model.predict(features)
-    display_results(expected, predicted_labels, 'Gradient Boosting Classifier')
-    return expected, predicted_labels
+def display_results(expected, predicted_labels, confusion_matrix_title='Confusion Matrix'):
+    chart_labels = np.unique(expected)
+    report = metrics.classification_report(expected, predicted_labels,
+                                           labels=np.unique(predicted_labels), output_dict=True)
+    print(report)
+    confusion_matrix = metrics.confusion_matrix(expected, predicted_labels,
+                                                labels=chart_labels)
+    cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix=confusion_matrix,
+                                                display_labels=chart_labels).plot()
+    cm_display.ax_.set_xticklabels(labels=chart_labels,
+                                   rotation=30, horizontalalignment='right')
+    plt.title(confusion_matrix_title)
+    plt.show()
+    return report
