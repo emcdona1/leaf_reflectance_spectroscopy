@@ -13,8 +13,11 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier, AdaBoostClassifier
 
 
+SEED = 1
+
+
 def main():
-    (X_train, X_test, y_train, y_test), group_name, level_name, leaf_side_name = load_classes()
+    X_train, X_test, y_train, y_test, group_name, level_name, leaf_side_name = load_classes()
     X_test, X_train, y_test, y_train, feature_reduction_name = implement_feature_reduction(X_test, X_train,
                                                                                            y_test, y_train)
 
@@ -26,15 +29,16 @@ def main():
     5. Random Forest
     6. Ada-Boost
     >>> '''))
-    algorithm = ['_', DecisionTreeClassifier, GaussianNB, KNeighborsClassifier,
-                 GradientBoostingClassifier, RandomForestClassifier, AdaBoostClassifier]
+    algorithm = ['_', DecisionTreeClassifier(random_state=SEED), GaussianNB(), KNeighborsClassifier(),
+                 GradientBoostingClassifier(random_state=SEED), RandomForestClassifier(random_state=SEED),
+                 AdaBoostClassifier(random_state=SEED)]
     expected, predicted, classification_report = classify_data(X_train, y_train, X_test, y_test, algorithm[idx])
 
     save_path = Path('./results')
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     filename = f'{group_name}_{level_name}_{leaf_side_name}-' +\
-               f'reduction_{feature_reduction_name}-{str(algorithm[idx]()).replace("()","")}'
+               f'reduction_{feature_reduction_name}-{str(algorithm[idx]).replace("()","")}'
     pd.DataFrame(classification_report).T.to_csv(Path(save_path, f'{filename}.csv'))
     plt.savefig(Path(save_path, f'{filename}.png'))
     plt.show()
@@ -86,8 +90,9 @@ def load_classes():
     leaf_side = ['_', 'all', 'top', 'bottom'][leaf_side]
 
     features, labels = load_spectral_data(group, level, leaf_side)
-
-    return train_test_split(features, labels, test_size=0.2, stratify=labels), group, level, leaf_side
+    X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, stratify=labels,
+                                                        random_state=SEED)
+    return X_train, X_test, y_train, y_test, group, level, leaf_side
 
 
 if __name__ == '__main__':

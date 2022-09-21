@@ -7,15 +7,14 @@ from sklearn import metrics
 
 
 def classify_data(features, labels, test_features, test_labels, classifier_function) -> (np.ndarray, np.ndarray):
-    model = classifier_function()
-    model.fit(features, labels)
+    classifier_function.fit(features, labels)
     if test_features.size:
         expected = np.array(test_labels)
-        predicted_labels = model.predict(test_features)
+        predicted_labels = classifier_function.predict(test_features)
     else:
         expected = np.array(labels)
-        predicted_labels = model.predict(features)
-    report = display_results(expected, predicted_labels, str(model).replace('()', ''))
+        predicted_labels = classifier_function.predict(features)
+    report = display_results(expected, predicted_labels, str(classifier_function).replace('()', ''))
     return expected, predicted_labels, report
 
 
