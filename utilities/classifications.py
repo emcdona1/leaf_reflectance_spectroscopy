@@ -33,5 +33,4 @@ def display_results(expected, predicted_labels, confusion_matrix_title='Confusio
     cm_display.ax_.set_xticklabels(labels=chart_labels,
                                    rotation=30, horizontalalignment='right')
     plt.title(confusion_matrix_title)
-    plt.show()
     return report_dict

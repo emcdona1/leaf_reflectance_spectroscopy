@@ -1,7 +1,10 @@
 # https://machinelearningmastery.com/get-your-hands-dirty-with-scikit-learn-now/
 # https://machinelearningmastery.com/gradient-boosting-machine-ensemble-in-python/
 
+import os
 import pandas as pd
+from pathlib import Path
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from utilities import load_spectral_data, pca, anova, mutual_info, classify_data
 from sklearn.naive_bayes import GaussianNB
@@ -11,7 +14,7 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier,
 
 
 def main():
-    X_train, X_test, y_train, y_test = load_classes()
+    (X_train, X_test, y_train, y_test), group_name, level_name = load_classes()
     X_test, X_train, y_test, y_train, feature_reduction_name = implement_feature_reduction(X_test, X_train,
                                                                                            y_test, y_train)
 
@@ -26,7 +29,15 @@ def main():
     algorithm = ['_', DecisionTreeClassifier, GaussianNB, KNeighborsClassifier,
                  GradientBoostingClassifier, RandomForestClassifier, AdaBoostClassifier]
     expected, predicted, classification_report = classify_data(X_train, y_train, X_test, y_test, algorithm[idx])
-    print(pd.DataFrame(classification_report).T)
+
+    save_path = Path('./results')
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    filename = f'{group_name}-{level_name}-' +\
+               f'reduction_{feature_reduction_name}-{str(algorithm[idx]()).replace("()","")}'
+    pd.DataFrame(classification_report).T.to_csv(Path(save_path, f'{filename}.csv'))
+    plt.savefig(Path(save_path, f'{filename}.png'))
+    plt.show()
 
 
 def implement_feature_reduction(X_test, X_train, y_test, y_train):
@@ -66,7 +77,7 @@ def load_classes():
     >>> '''))
     level = ['_', 'subgenus', 'subsection', 'species', 'species_group'][level]
     features, labels = load_spectral_data(group, level)
-    return train_test_split(features, labels, test_size=0.2, stratify=labels)
+    return train_test_split(features, labels, test_size=0.2, stratify=labels), group, level
 
 
 if __name__ == '__main__':
