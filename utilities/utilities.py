@@ -4,11 +4,12 @@ import re
 import numpy as np
 
 
-def load_spectral_data(search_group: str, search_level: str, drop_small=True, search_query=None) -> \
+def load_spectral_data(search_group: str, search_level: str, search_side: str, drop_small=True) -> \
         (pd.DataFrame, pd.Series):
     all_data = _load_data_and_clean()
     all_data = _process_search_group(all_data, search_group)
     all_data = _process_search_level(all_data, search_group, search_level)
+    all_data = _process_leaf_side(all_data, search_side)
 
     if drop_small:
         classes_to_remove = pd.value_counts(all_data[search_level])
@@ -54,6 +55,14 @@ def _process_search_group(all_data, search_group):
         all_data = all_data[all_data['subsection'] == 'La']
     elif search_group != 'all':
         raise ValueError(f'Search group value is invalid: {search_group}')
+    return all_data
+
+
+def _process_leaf_side(all_data, search_side):
+    if search_side == 'top':
+        all_data = all_data[all_data['type'] == 't']
+    elif search_side == 'bottom':
+        all_data = all_data[all_data['type'] == 'b']
     return all_data
 
 

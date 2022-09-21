@@ -14,7 +14,7 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier,
 
 
 def main():
-    (X_train, X_test, y_train, y_test), group_name, level_name = load_classes()
+    (X_train, X_test, y_train, y_test), group_name, level_name, leaf_side_name = load_classes()
     X_test, X_train, y_test, y_train, feature_reduction_name = implement_feature_reduction(X_test, X_train,
                                                                                            y_test, y_train)
 
@@ -33,7 +33,7 @@ def main():
     save_path = Path('./results')
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    filename = f'{group_name}-{level_name}-' +\
+    filename = f'{group_name}_{level_name}_{leaf_side_name}-' +\
                f'reduction_{feature_reduction_name}-{str(algorithm[idx]()).replace("()","")}'
     pd.DataFrame(classification_report).T.to_csv(Path(save_path, f'{filename}.csv'))
     plt.savefig(Path(save_path, f'{filename}.png'))
@@ -69,6 +69,7 @@ def load_classes():
     3. all (all samples with at least 5 specimens / label)
     >>> '''))
     group = ['-', 'rhrh', 'lapponica', 'all'][group]
+
     level = int(input('''What classification level would you like to use?
     1. subgenus ("all" only)
     2. subsection ("RhRh" or "all" only)
@@ -76,8 +77,17 @@ def load_classes():
     4. species group ("Lapponica" only)
     >>> '''))
     level = ['_', 'subgenus', 'subsection', 'species', 'species_group'][level]
-    features, labels = load_spectral_data(group, level)
-    return train_test_split(features, labels, test_size=0.2, stratify=labels), group, level
+
+    leaf_side = int(input('''Would you like to use all data, or only top or bottom sides?
+    1. All
+    2. Top
+    3. Bottom
+    >>> '''))
+    leaf_side = ['_', 'all', 'top', 'bottom'][leaf_side]
+
+    features, labels = load_spectral_data(group, level, leaf_side)
+
+    return train_test_split(features, labels, test_size=0.2, stratify=labels), group, level, leaf_side
 
 
 if __name__ == '__main__':
