@@ -30,7 +30,7 @@ def _process_search_level(all_data, search_group, search_level):
         if search_group == 'lapponica':
             raise ValueError(f'Invalid combination: {search_group} and {search_level}')
         all_data = all_data[all_data['subsection'] != '']
-    elif search_level == 'species group':
+    elif search_level == 'species_group':
         if search_group != 'lapponica':
             raise ValueError(f'Invalid combination: {search_group} and {search_level}')
         groups = {'amundsenianum': 2, 'bulu': 4, 'capitatum': 5, 'complexum': 2, 'fastigiatum': 3,
@@ -41,7 +41,7 @@ def _process_search_level(all_data, search_group, search_level):
                   'rupicola_var_rupicola': 5, 'russatum': 5, 'tapeptiforme': 2, 'tapetiforme': 2,
                   'telmateium': 4, 'thymifolium': 1, 'trichanthum': -1, 'tsaii': 1,
                   'websterianum': 1, 'yungningense': 2}
-        all_data['species group'] = all_data['species'].apply(lambda f: str(groups[f]))
+        all_data['species_group'] = all_data['species'].apply(lambda f: str(groups[f]))
     elif search_level != 'species':
         raise ValueError(f'Search level value is invalid: {search_level}')
     return all_data

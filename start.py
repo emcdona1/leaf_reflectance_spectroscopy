@@ -64,7 +64,7 @@ def load_classes():
     3. species
     4. species group ("Lapponica" only)
     >>> '''))
-    level = ['_', 'subgenus', 'subsection', 'species', 'species group'][level]
+    level = ['_', 'subgenus', 'subsection', 'species', 'species_group'][level]
     features, labels = load_spectral_data(group, level)
     return train_test_split(features, labels, test_size=0.2, stratify=labels)
 
