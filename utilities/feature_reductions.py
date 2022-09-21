@@ -8,7 +8,7 @@ from sklearn.model_selection import train_test_split
 
 def pca(X_train, y_train, X_test=None, y_test=None, n_features=10) \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, PCA):
-    if not X_test:
+    if X_test.shape[0] != 0:
         X_train, X_test, y_train, y_test = train_test_split(X_train, y_train,
                                                             test_size=0.2, random_state=1,
                                                             shuffle=True, stratify=y_train)
@@ -17,7 +17,7 @@ def pca(X_train, y_train, X_test=None, y_test=None, n_features=10) \
     X_transformed_train = p.transform(X_train)
     X_transformed_test = p.transform(X_test)
     # _view_pca(X_transformed, y, level)
-    return X_transformed_train, y_train, X_transformed_test, y_test, p
+    return X_transformed_train, y_train, X_transformed_test, y_test  #, p
 
 
 def _view_pca(X_transformed, labels, level):
@@ -38,7 +38,7 @@ def _view_pca(X_transformed, labels, level):
 
 def anova(X_train, y_train, X_test=None, y_test=None, n_features='all') \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, SelectKBest):
-    if X_test is None:
+    if X_test.shape[0] != 0:
         X_train, X_test, y_train, y_test = train_test_split(X_train, y_train,
                                                             test_size=0.2, random_state=1,
                                                             shuffle=True, stratify=y_train)
@@ -62,7 +62,7 @@ def _view_feature_usefulness(fs):
 
 def mutual_info(X_train, y_train, X_test=None, y_test=None, n_features='all') \
         -> (np.ndarray, np.ndarray, np.ndarray, np.ndarray, SelectKBest):
-    if X_test is None:
+    if X_test.shape[0] != 0:
         X_train, X_test, y_train, y_test = train_test_split(X_train, y_train,
                                                             test_size=0.2, random_state=1,
                                                             shuffle=True, stratify=y_train)
@@ -71,5 +71,5 @@ def mutual_info(X_train, y_train, X_test=None, y_test=None, n_features='all') \
     X_train_fs = kbest.transform(X_train)  # note: this doesn't do anything when k='all'
     X_test_fs = kbest.transform(X_test)  # note: this doesn't do anything when k='all'
     _view_feature_usefulness(kbest)
-    kbest.feature_names_in_
+    # kbest.feature_names_in_
     return X_train_fs, y_train, X_test_fs, y_test, kbest

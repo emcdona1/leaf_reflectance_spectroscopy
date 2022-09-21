@@ -22,7 +22,9 @@ def classify_data(features, labels, test_features, test_labels, classifier_funct
 def display_results(expected, predicted_labels, confusion_matrix_title='Confusion Matrix'):
     chart_labels = np.unique(expected)
     report = metrics.classification_report(expected, predicted_labels,
-                                           labels=np.unique(predicted_labels), output_dict=True)
+                                           labels=np.unique(predicted_labels), output_dict=False)
+    report_dict = metrics.classification_report(expected, predicted_labels,
+                                                labels=np.unique(predicted_labels), output_dict=True)
     print(report)
     confusion_matrix = metrics.confusion_matrix(expected, predicted_labels,
                                                 labels=chart_labels)
@@ -32,4 +34,4 @@ def display_results(expected, predicted_labels, confusion_matrix_title='Confusio
                                    rotation=30, horizontalalignment='right')
     plt.title(confusion_matrix_title)
     plt.show()
-    return report
+    return report_dict

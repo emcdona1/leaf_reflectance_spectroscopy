@@ -1,6 +1,7 @@
 # https://machinelearningmastery.com/get-your-hands-dirty-with-scikit-learn-now/
 # https://machinelearningmastery.com/gradient-boosting-machine-ensemble-in-python/
 
+import pandas as pd
 from sklearn.model_selection import train_test_split
 from utilities import load_spectral_data, pca, anova, mutual_info, classify_data
 from sklearn.naive_bayes import GaussianNB
@@ -11,7 +12,8 @@ from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier,
 
 def main():
     X_train, X_test, y_train, y_test = load_classes()
-    X_test, X_train, y_test, y_train = implement_feature_reduction(X_test, X_train, y_test, y_train)
+    X_test, X_train, y_test, y_train, feature_reduction_name = implement_feature_reduction(X_test, X_train,
+                                                                                           y_test, y_train)
 
     idx = int(input('''Which classification algorithm would you like to use?
     1. Decision Tree
@@ -24,10 +26,11 @@ def main():
     algorithm = ['_', DecisionTreeClassifier, GaussianNB, KNeighborsClassifier,
                  GradientBoostingClassifier, RandomForestClassifier, AdaBoostClassifier]
     expected, predicted, classification_report = classify_data(X_train, y_train, X_test, y_test, algorithm[idx])
-    print(classification_report.keys())
+    print(pd.DataFrame(classification_report).T)
 
 
 def implement_feature_reduction(X_test, X_train, y_test, y_train):
+    name = 'none'
     if input('Would you like to do feature reduction? (Y/n) >>> ').lower() == 'y':
         feature_reduction = input('''What type of feature reduction?
         1. PCA
@@ -36,13 +39,16 @@ def implement_feature_reduction(X_test, X_train, y_test, y_train):
         >>> ''').lower()
         if feature_reduction == '1':
             X_train, y_train, X_test, y_test = pca(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'pca'
         elif feature_reduction == '2':
             X_train, y_train, X_test, y_test, fr = anova(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'anova'
         elif feature_reduction == '3':
             X_train, y_train, X_test, y_test, fr = mutual_info(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'mutual_info'
         else:
             print(f'Warning: {feature_reduction} is not a valid selection; all features will be used.')
-    return X_test, X_train, y_test, y_train
+    return X_test, X_train, y_test, y_train, name
 
 
 def load_classes():
