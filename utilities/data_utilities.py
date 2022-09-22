@@ -4,9 +4,29 @@ import re
 import numpy as np
 
 
-def load_spectral_data(search_group: str, search_level: str, search_side: str, drop_small=True) -> \
-        (pd.DataFrame, pd.Series):
-    all_data = _load_data_and_clean()
+def load_data_and_clean(csv_file_path=Path('./data/Rhododendron_spectramatrix.csv')) -> pd.DataFrame:
+    file_loc = Path(csv_file_path)
+    all_data = pd.read_csv(file_loc, index_col='accession')
+    all_data = all_data[~all_data['species'].str.contains('unk')]
+    all_data['full_label'] = all_data['species']
+    del all_data['species']
+
+    def split_label(a):
+        return [''.join(label) for label
+                in list(zip(re.findall('[A-Z.]', a), re.split('[A-Z.]', a)[1:]))]
+
+    all_data['genus'] = all_data['full_label'].apply(lambda f: split_label(f)[0])
+    all_data['subgenus'] = all_data['full_label'].apply(lambda f: split_label(f)[1])
+    all_data['subsection'] = all_data['full_label'].apply(lambda f: split_label(f)[2]
+    if len(split_label(f)) == 4
+    else '')
+    all_data['species'] = all_data['full_label'].apply(lambda f: split_label(f)[-1].replace('.', ''))
+    del all_data['full_label']
+    return all_data
+
+
+def filter_spectral_data(search_group: str, search_level: str, search_side: str, all_data=load_data_and_clean(),
+                         drop_small=True) -> (pd.DataFrame, pd.Series):
     all_data = _process_search_group(all_data, search_group)
     all_data = _process_search_level(all_data, search_group, search_level)
     all_data = _process_leaf_side(all_data, search_side)
@@ -63,25 +83,4 @@ def _process_leaf_side(all_data, search_side):
         all_data = all_data[all_data['type'] == 't']
     elif search_side == 'bottom':
         all_data = all_data[all_data['type'] == 'b']
-    return all_data
-
-
-def _load_data_and_clean():
-    file_loc = Path('./data/Rhododendron_spectramatrix.csv')
-    all_data = pd.read_csv(file_loc, index_col='accession')
-    all_data = all_data[~all_data['species'].str.contains('unk')]
-    all_data['full_label'] = all_data['species']
-    del all_data['species']
-
-    def split_label(a):
-        return [''.join(label) for label
-                in list(zip(re.findall('[A-Z.]', a), re.split('[A-Z.]', a)[1:]))]
-
-    all_data['genus'] = all_data['full_label'].apply(lambda f: split_label(f)[0])
-    all_data['subgenus'] = all_data['full_label'].apply(lambda f: split_label(f)[1])
-    all_data['subsection'] = all_data['full_label'].apply(lambda f: split_label(f)[2]
-    if len(split_label(f)) == 4
-    else '')
-    all_data['species'] = all_data['full_label'].apply(lambda f: split_label(f)[-1].replace('.', ''))
-    del all_data['full_label']
     return all_data

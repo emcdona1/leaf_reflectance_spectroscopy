@@ -4,10 +4,14 @@
 
 1. Create an environment with Python 3.9, and install requirements (`pip -r requirements.txt`)
 2. Execute `python start.py` and follow prompts in the terminal.
+3. At the end of each program execution, the displayed results are saved
+   to a folder called `results`.  The PNG contains the confusion matrix, and 
+   the CSV file with the same name contains the performance summary (accuracy et al.).
 
-### Contents
+-----
 
-_to come_
+### Modifications
+
 
 -----
 ### Credits

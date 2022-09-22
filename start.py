@@ -6,7 +6,7 @@ import pandas as pd
 from pathlib import Path
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from utilities import load_spectral_data, pca, anova, mutual_info, classify_data
+from utilities import load_data_and_clean, filter_spectral_data, pca, anova, mutual_info, classify_data
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -89,7 +89,8 @@ def load_classes():
     >>> '''))
     leaf_side = ['_', 'all', 'top', 'bottom'][leaf_side]
 
-    features, labels = load_spectral_data(group, level, leaf_side)
+    all_data = load_data_and_clean()  # todo: filename
+    features, labels = filter_spectral_data(group, level, leaf_side, all_data)
     X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, stratify=labels,
                                                         random_state=SEED)
     return X_train, X_test, y_train, y_test, group, level, leaf_side
