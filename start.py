@@ -2,8 +2,10 @@
 # https://machinelearningmastery.com/gradient-boosting-machine-ensemble-in-python/
 
 import os
+import sys
 import pandas as pd
 from pathlib import Path
+from typing import Union
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from utilities import load_data_and_clean, filter_spectral_data, pca, anova, mutual_info, classify_data
@@ -44,28 +46,6 @@ def main():
     plt.show()
 
 
-def implement_feature_reduction(X_test, X_train, y_test, y_train):
-    name = 'none'
-    if input('Would you like to do feature reduction? (Y/n) >>> ').lower() == 'y':
-        feature_reduction = input('''What type of feature reduction?
-        1. PCA
-        2. ANOVA
-        3. Mutual info
-        >>> ''').lower()
-        if feature_reduction == '1':
-            X_train, y_train, X_test, y_test = pca(X_train, y_train, X_test, y_test, n_features=150)
-            name = 'pca'
-        elif feature_reduction == '2':
-            X_train, y_train, X_test, y_test, fr = anova(X_train, y_train, X_test, y_test, n_features=150)
-            name = 'anova'
-        elif feature_reduction == '3':
-            X_train, y_train, X_test, y_test, fr = mutual_info(X_train, y_train, X_test, y_test, n_features=150)
-            name = 'mutual_info'
-        else:
-            print(f'Warning: {feature_reduction} is not a valid selection; all features will be used.')
-    return X_test, X_train, y_test, y_train, name
-
-
 def load_classes():
     group = int(input('''What taxonomy group would you like to use?
     1. RhRh (all within section Rhododendron, i.e. the 2nd set of characters in the label)
@@ -89,12 +69,39 @@ def load_classes():
     >>> '''))
     leaf_side = ['_', 'all', 'top', 'bottom'][leaf_side]
 
-    all_data = load_data_and_clean()  # todo: filename
+    all_data = load_data_and_clean(custom_csv_filename)
     features, labels = filter_spectral_data(group, level, leaf_side, all_data)
     X_train, X_test, y_train, y_test = train_test_split(features, labels, test_size=0.2, stratify=labels,
                                                         random_state=SEED)
     return X_train, X_test, y_train, y_test, group, level, leaf_side
 
 
+def implement_feature_reduction(X_test, X_train, y_test, y_train):
+    name = 'none'
+    if input('Would you like to do feature reduction? (Y/n) >>> ').lower() == 'y':
+        feature_reduction = input('''What type of feature reduction?
+        1. PCA
+        2. ANOVA
+        3. Mutual info
+        >>> ''').lower()
+        if feature_reduction == '1':
+            X_train, y_train, X_test, y_test = pca(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'pca'
+        elif feature_reduction == '2':
+            X_train, y_train, X_test, y_test, fr = anova(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'anova'
+        elif feature_reduction == '3':
+            X_train, y_train, X_test, y_test, fr = mutual_info(X_train, y_train, X_test, y_test, n_features=150)
+            name = 'mutual_info'
+        else:
+            print(f'Warning: {feature_reduction} is not a valid selection; all features will be used.')
+    return X_test, X_train, y_test, y_train, name
+
+
 if __name__ == '__main__':
+    if len(sys.argv) == 2:
+        custom_csv_filename = Path(sys.argv[1])
+        assert custom_csv_filename.exists(), f'File not found: {custom_csv_filename.absolute()}'
+    else:
+        custom_csv_filename = None
     main()
